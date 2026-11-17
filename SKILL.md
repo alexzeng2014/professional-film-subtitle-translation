@@ -49,6 +49,7 @@ Identify and record:
 - Required output: monolingual, bilingual, translated only, or review report.
 - Available evidence: video, audio, transcript, existing subtitles, glossary, script, cast list, or production notes.
 - Rights and usage constraints supplied by the user.
+- Production constraints: task mode, locked timing policy, SDH/accessibility requirements, forced-narrative policy, machine-assistance policy, and prior episode or series continuity materials.
 
 Use these defaults only when the user has not specified otherwise:
 
@@ -73,7 +74,7 @@ If media is available, inspect at least the opening, difficult scenes, songs, ov
 
 ## Step 2: Build Film Context
 
-Read [research-and-context.md](references/research-and-context.md). Then build a compact working bible:
+Read [research-and-context.md](references/research-and-context.md). For substantial, episodic, machine-assisted, SDH, sensitive, or multi-pass work, also read [production-and-continuity.md](references/production-and-continuity.md). Then build a compact working bible:
 
 - Logline and major dramatic arc.
 - Scene or sequence map.
@@ -82,6 +83,7 @@ Read [research-and-context.md](references/research-and-context.md). Then build a
 - Historical, geographic, religious, institutional, and cultural references that affect meaning.
 - Recurring jokes, catchphrases, songs, poems, and motifs.
 - Known ambiguities and research questions.
+- Production contract, high-risk cue register, and series continuity rules.
 
 For a long film, series episode, or large batch, use scene-indexed batches rather than translating the entire file as unrelated rows. Keep the glossary, voice bible, and uncertainty log open across batches.
 
@@ -110,6 +112,9 @@ Before drafting, create the following in a temporary work area when the task is 
 3. `character-voices.md` for register and address rules.
 4. `uncertainty-log.md` for unresolved source or research issues.
 5. `qa-report.md` for pass-by-pass findings and final score.
+6. `production-contract.md` for locked delivery decisions.
+7. `high-risk-cues.md` for cues that must be revisited in later passes.
+8. `series-continuity.md` for sequels, episodic work, or recurring clients.
 
 For short clips, this can remain a compact internal checklist. For a feature-length subtitle, maintain it as persistent state so later cues do not contradict earlier choices.
 
@@ -207,6 +212,16 @@ Search specifically for:
 - Name variants, inconsistent accents, and mixed orthography.
 - Cues where a translation sounds polished but changes the speech act.
 
+### Pass G: Production, accessibility, and regression review
+
+- Verify that the final file still satisfies the production contract.
+- For SDH, check speaker labels, sound descriptions, music conventions, and accessibility-guide compliance.
+- For on-screen text and forced narratives, check classification, timing, placement, and agreement with dialogue.
+- For machine-assisted work, check for hallucination, omission, and speaker misattribution in every high-risk cue.
+- For episodic work, check prior-episode terminology, address forms, callbacks, and deliberate continuity changes.
+- Compare revision passes and confirm that a later polish did not regress an earlier correct meaning.
+- Re-run global terminology and technical QA after any bulk replacement or final edit.
+
 For a feature-length project, run at least two complete translation-review passes and one complete technical pass. Between passes, preserve the previous artifact so improvements can be diffed and regressions detected.
 
 ## Step 7: Score and Release Gate
@@ -286,6 +301,7 @@ Keep the report factual. Do not turn it into marketing copy.
 ## Reference Routing
 
 - Complex end-to-end workflow or long feature: [operational-playbook.md](references/operational-playbook.md).
+- Production contracts, machine-assisted post-editing, series continuity, SDH, sensitive content, and regression control: [production-and-continuity.md](references/production-and-continuity.md).
 - Background research, edition identification, names, and cultural facts: [research-and-context.md](references/research-and-context.md).
 - Semantic translation, voice, humor, lyrics, and difficult dialogue: [translation-craft.md](references/translation-craft.md).
 - Chinese target-language style and common translationese: [chinese-film-language.md](references/chinese-film-language.md).

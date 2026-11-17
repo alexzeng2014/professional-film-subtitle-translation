@@ -2,6 +2,39 @@
 
 Use only the templates relevant to a substantial project. For a short clip, a compact internal checklist is enough.
 
+## 0. Production contract
+
+```markdown
+# Production Contract
+
+## Project
+- Film/series and episode:
+- Edition/runtime:
+- Source language and audio track:
+- Target language and variant:
+
+## Scope and mode
+- Task:
+- Standard dialogue / SDH:
+- Bilingual or monolingual:
+- Machine assistance:
+
+## Locked decisions
+- Timing policy:
+- Segmentation policy:
+- Style guide and reading limits:
+- Speaker labels:
+- Sound descriptions and music:
+- Forced narrative/on-screen text:
+- Profanity/rating policy:
+- Existing series glossary:
+- Prior episodes consulted:
+
+## Deliverables
+
+## Assumptions
+```
+
 ## 1. Context brief
 
 ```markdown
@@ -106,7 +139,30 @@ Add short target-language examples that represent the voice without copying isol
 
 Impact values correspond to the P0-P3 severity scale.
 
-## 5. Correction log for merged versions
+## 5. High-risk cue register
+
+```markdown
+| Cue/time | Category | Risk | Current decision | Status | Recheck after |
+|---|---|---|---|---|---|
+```
+
+Categories include semantic reversals, speaker ambiguity, names and facts, reveals, jokes, lyrics, multilingual dialogue, SDH labels, and on-screen text.
+
+## 6. Series continuity register
+
+```markdown
+## Locked terms
+| Source term | Locked target | Prior episode | Status | Notes |
+|---|---|---|---|---|
+
+## Relationship and address changes
+
+## Callbacks and recurring motifs
+
+## Deliberate changes from prior localization
+```
+
+## 7. Correction log for merged versions
 
 ```markdown
 | Time | Source evidence | Version A | Version B | Chosen meaning | Final text | Reason |
@@ -115,7 +171,7 @@ Impact values correspond to the P0-P3 severity scale.
 
 Record only meaningful decisions. Do not create a changelog for every punctuation mark.
 
-## 6. Technical audit summary
+## 8. Technical audit summary
 
 ```markdown
 # Technical Audit
@@ -136,6 +192,9 @@ Record only meaningful decisions. Do not create a changelog for every punctuatio
 - Unmatched brackets/quotes:
 - Duplicate adjacent cues:
 - Technical health: PASS / WARN / FAIL
+- Target variant consistency:
+- Speaker/sound/music conventions:
+- Forced-narrative/on-screen-text conventions:
 
 ## Critical findings
 
@@ -144,7 +203,7 @@ Record only meaningful decisions. Do not create a changelog for every punctuatio
 
 Remember: this is not the semantic translation score.
 
-## 7. QA report
+## 9. QA report
 
 ```markdown
 # Film Subtitle QA Report
@@ -164,6 +223,7 @@ Remember: this is not the semantic translation score.
 - [ ] Blind target-language read
 - [ ] Character voice and continuity
 - [ ] Adversarial semantic review
+- [ ] Production, accessibility, and regression review
 - [ ] Technical audit
 - [ ] Format/render check
 - [ ] Final regression check
@@ -175,6 +235,9 @@ Remember: this is not the semantic translation score.
 - Songs:
 - Language switching:
 - Profanity:
+- Machine assistance:
+- SDH/accessibility:
+- Forced narrative/on-screen text:
 
 ## Findings
 ### P0
@@ -207,7 +270,7 @@ Remember: this is not the semantic translation score.
 RELEASE / REVISE / BLOCKED
 ```
 
-## 8. Final user-facing summary
+## 10. Final user-facing summary
 
 Keep it concise:
 
@@ -219,13 +282,14 @@ Completed: `final.zh-Hans.srt`
 - QA: two semantic passes, one blind read, technical and ASS render checks
 - Key decisions: names standardized; 1,268 cues revised; opening and dedication added by request
 - Technical result: no overlaps, empty cues, or invalid timestamps
+- Production policy: standard dialogue track; original timing preserved; no machine translation used in final text
 - Self-assessed score: 8.8/10
 - Remaining limitation: several source lines depend on ASR and were not audio-verified
 ```
 
 Do not overstate what was checked.
 
-## 9. Naming convention
+## 11. Naming convention
 
 Recommended output names:
 
@@ -238,7 +302,7 @@ Title.2024.zh-Hans.qa.md
 
 Preserve user/project naming when one already exists.
 
-## 10. Final delivery content
+## 12. Final delivery content
 
 Unless the user asks for only a file, report:
 

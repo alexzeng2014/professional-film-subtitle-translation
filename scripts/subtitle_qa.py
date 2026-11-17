@@ -28,8 +28,12 @@ TIMING_ASS = re.compile(r"^\s*(\d+):(\d{2}):(\d{2})[.](\d{1,2})\s*$")
 ASS_TAG = re.compile(r"\{[^}]*\}")
 HTML_TAG = re.compile(r"</?[^>]+>")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af]")
+JAPANESE_KANA = re.compile(r"[\u3040-\u30ff]")
+KOREAN_HANGUL = re.compile(r"[\uac00-\ud7af]")
 LATIN_WORD = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
 NUMBER = re.compile(r"\d+(?:[.,]\d+)?")
+SIMPLIFIED_MARKERS = set("们这国说话电影汉语后来发现时间没关于现里边对话")
+TRADITIONAL_MARKERS = set("們這國說話電影漢語後來發現時間沒關於現裡邊對話")
 
 
 @dataclass
@@ -295,6 +299,19 @@ def choose_thresholds(language: str) -> tuple[float, int]:
     return 20.0, 42
 
 
+def detect_language_profile(requested_language: str, cues: list[Cue]) -> str:
+    normalized = requested_language.lower()
+    if normalized != "auto":
+        return normalized
+    if any(JAPANESE_KANA.search(cue.text) for cue in cues):
+        return "ja"
+    if any(KOREAN_HANGUL.search(cue.text) for cue in cues):
+        return "ko"
+    if any(CJK.search(cue.text) for cue in cues):
+        return "zh"
+    return "latin"
+
+
 def add_issue(
     issues: list[Issue],
     code: str,
@@ -317,7 +334,8 @@ def audit_cues(
     max_duration: float,
     min_gap_ms: int,
 ) -> tuple[list[Issue], dict[str, float | int | str], list[float]]:
-    defaults_cps, defaults_chars = choose_thresholds(language)
+    language_profile = detect_language_profile(language, cues)
+    defaults_cps, defaults_chars = choose_thresholds(language_profile)
     cps_limit = max_cps if max_cps is not None else defaults_cps
     char_limit = max_line_chars if max_line_chars is not None else defaults_chars
     issues: list[Issue] = []
@@ -403,6 +421,15 @@ def audit_cues(
         if re.search(r"[!?！？]{2,}", cue.text):
             add_issue(issues, "REPEATED_TERMINAL_PUNCT", "P3", "Repeated terminal punctuation may be unintended.", cue)
 
+        if language_profile.startswith("zh") and any(line.endswith("。") for line in lines):
+            add_issue(
+                issues,
+                "CHINESE_FINAL_PERIOD",
+                "P3",
+                "Chinese ordinary dialogue cue ends with a full stop; most subtitle guides omit it.",
+                cue,
+            )
+
     for previous, current in zip(cues, cues[1:]):
         if previous.end_ms > current.start_ms:
             add_issue(
@@ -435,11 +462,23 @@ def audit_cues(
     check_delimiters_across_cues(cues, issues, "“", "”", "UNBALANCED_QUOTES", "Chinese quotation marks")
     check_delimiters_across_cues(cues, issues, "(", ")", "UNBALANCED_PARENS", "Parentheses")
     check_delimiters_across_cues(cues, issues, "（", "）", "UNBALANCED_FULLWIDTH_PARENS", "Full-width parentheses")
+    check_delimiters_across_cues(cues, issues, "[", "]", "UNBALANCED_SQUARE_BRACKETS", "Square brackets")
+    check_delimiters_across_cues(cues, issues, "《", "》", "UNBALANCED_TITLE_MARKS", "Title marks")
+
+    all_text = "\n".join(cue.text for cue in cues)
+    if any(char in SIMPLIFIED_MARKERS for char in all_text) and any(char in TRADITIONAL_MARKERS for char in all_text):
+        add_issue(
+            issues,
+            "MIXED_CHINESE_SCRIPT",
+            "P1",
+            "Simplified and Traditional Chinese marker characters both appear; lock one target variant.",
+        )
 
     durations = [cue.duration_s for cue in cues if cue.end_ms > cue.start_ms]
     cps_over = sum(1 for value in cps_values if value > cps_limit)
     settings: dict[str, float | int | str] = {
-        "language_profile": language,
+        "requested_language": language,
+        "language_profile": language_profile,
         "max_cps": cps_limit,
         "max_line_chars": char_limit,
         "max_lines": max_lines,

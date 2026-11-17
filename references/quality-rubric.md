@@ -83,6 +83,8 @@ Examples:
 - Mistranslated reveal, threat, confession, or causal relation.
 - Names changed inconsistently enough to confuse characters.
 - Persistent CPS or clipping problem across material portions.
+- Mixed target variants or orthography that makes the deliverable unusable as a locked release.
+- A required SDH speaker label, sound description, or forced-narrative cue that materially misleads the viewer.
 
 Action: fix before scoring above 8.5.
 
@@ -184,6 +186,7 @@ Check:
 - Empty text.
 - Tags and styles.
 - Format conversion integrity.
+- Speaker, sound, music, and forced-narrative conventions required by the selected deliverable.
 
 ## 5. Release gates
 
@@ -194,6 +197,7 @@ Check:
 - P2 rate normally at or below 2 per 100 cues.
 - All automated critical checks pass.
 - All high-risk semantic cues reviewed.
+- Production, accessibility, and regression checks completed where relevant.
 - Uncertainty disclosed.
 
 ### 9.0+: premium release

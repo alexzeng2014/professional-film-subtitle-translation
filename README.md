@@ -12,6 +12,8 @@
 - 歌词、双关、俚语、多语言对白、旁白与银幕文字处理。
 - 中文电影语言专项规范，重点清除翻译腔。
 - 长片分批翻译和全片连续性管理。
+- 制作契约、机器辅助译后编辑、剧集连续性、SDH、强制字幕和敏感内容处理。
+- 多轮修订的回归控制、高风险字幕登记和最终交接证据。
 - AI 字幕与官方字幕时间轴对齐、差异审查与择优合并。
 - P0-P3 错误分级、十分制评分和 8.5 分发布门槛。
 - SRT、ASS、WebVTT 技术审校与 ASS 宋体样式转换。
@@ -28,13 +30,16 @@ professional-film-subtitle-translation/
 |   |-- research-and-context.md
 |   |-- translation-craft.md
 |   |-- chinese-film-language.md
+|   |-- production-and-continuity.md
 |   |-- timing-format-and-style.md
 |   |-- quality-rubric.md
 |   `-- deliverable-templates.md
-`-- scripts/
+|-- scripts/
     |-- subtitle_qa.py
     |-- srt_to_ass.py
     `-- align_subtitle_versions.py
+`-- tests/
+    `-- test_subtitle_qa.py
 ```
 
 ## 安装
@@ -88,6 +93,8 @@ python scripts/subtitle_qa.py input.srt --language zh --format md
 - CPS、行宽、行数和过短/过长字幕。
 - 重复空格、未闭合引号、异常控制字符。
 - ASS 标签混入普通文本。
+- 自动识别 CJK 阅读速度档案。
+- 简繁混用和中文普通对白句末句号警告。
 
 该工具输出技术健康分，不代表翻译语义分。
 
@@ -126,6 +133,7 @@ python scripts/srt_to_ass.py input.srt output.ass `
 - CPS、行宽、重叠、负时长和引号错误检测。
 - 两份包含 1903/1916 条字幕的不同分段版本自动对齐。
 - SRT 到 ASS 转换及 FFprobe 字幕流解析。
+- 简繁混用、中文句末句号与自动语言档案检测。
 - Skill 结构校验和 Python 语法编译。
 
 ## 限制
