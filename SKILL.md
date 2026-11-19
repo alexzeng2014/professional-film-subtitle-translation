@@ -270,7 +270,7 @@ When output needs ASS styling, use:
 python scripts/srt_to_ass.py input.srt output.ass --font "SimSun" --font-size 56
 ```
 
-The default style is a conservative 1920x1080 cinema subtitle: white Song-style text, black outline, bottom-center placement. Override font, size, margins, resolution, outline, and shadow for the target platform. Do not change translation text during format conversion unless explicitly asked.
+The default style is a conservative 1920x1080 cinema subtitle: white Song-style text, black outline, bottom-center placement. Override font, size, margins, resolution, outline, and shadow for the target platform. ASS/SSA output must be UTF-8 without a BOM and must begin with `[Script Info]`; a BOM can make Kodi/libass recognize the track but render zero events. The converter writes CRLF and verifies the output bytes. Do not change translation text during format conversion unless explicitly asked.
 
 ## Deliverables
 

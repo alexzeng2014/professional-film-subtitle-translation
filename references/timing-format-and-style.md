@@ -144,6 +144,10 @@ ASS font requirements:
 - Avoid a font that looks correct in an editor but falls back in the final player.
 - Do not use all-caps, negative letter spacing, or heavy outlines for Chinese cinema subtitles.
 - For 720p, scale size and margins proportionally or let the player scale.
+- Write ASS/SSA as UTF-8 without a BOM, using CRLF for conservative player compatibility.
+- Confirm the first three bytes are not `EF BB BF` and the file begins with `[Script Info]`.
+
+A BOM can produce a deceptive Kodi failure: the subtitle appears in the track menu and can be selected, but no events render. Treat a UTF-8 BOM in ASS as a release-blocking compatibility defect even when another player tolerates it.
 
 ### Typesetting
 
@@ -254,6 +258,7 @@ Inspect:
 - No unintended overlaps.
 - No empty text.
 - No invalid encoding or control characters.
+- ASS/SSA is UTF-8 without BOM and begins with `[Script Info]`.
 - No stale ASS tags in SRT.
 - CPS and line lengths are within the chosen guide.
 - Speaker labels are consistent.

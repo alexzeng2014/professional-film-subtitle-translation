@@ -18,6 +18,8 @@ TIMING_RE = re.compile(
     r"^\s*(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})\s*-->\s*"
     r"(\d{1,2}):(\d{2}):(\d{2})[,.](\d{1,3})(?:\s+.*)?$"
 )
+UTF8_BOM = b"\xef\xbb\xbf"
+ASS_HEADER = b"[Script Info]"
 
 
 @dataclass
@@ -161,6 +163,23 @@ def count_ass_dialogues(text: str) -> int:
     return sum(1 for line in text.splitlines() if line.startswith("Dialogue:"))
 
 
+def write_ass_file(path: Path, text: str) -> int:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\r\n") as handle:
+        handle.write(text)
+
+    raw = path.read_bytes()
+    if raw.startswith(UTF8_BOM):
+        raise ValueError("ASS output must not start with a UTF-8 BOM")
+    if not raw.startswith(ASS_HEADER):
+        raise ValueError("ASS output must start with [Script Info]")
+    if b"\x00" in raw:
+        raise ValueError("ASS output contains a NUL byte")
+
+    rendered = raw.decode("utf-8")
+    return count_ass_dialogues(rendered)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Convert SRT to ASS with a conservative cinema style.")
     parser.add_argument("input", type=Path)
@@ -178,7 +197,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--margin-l", type=int, default=80)
     parser.add_argument("--margin-r", type=int, default=80)
     parser.add_argument("--margin-v", type=int, default=58)
-    parser.add_argument("--encoding", choices=("utf-8", "utf-8-sig"), default="utf-8-sig")
+    parser.add_argument(
+        "--encoding",
+        choices=("utf-8",),
+        default="utf-8",
+        help="ASS output encoding; UTF-8 without BOM only",
+    )
     return parser
 
 
@@ -207,8 +231,11 @@ def main() -> int:
         event_count = count_ass_dialogues(output_text)
         if event_count != len(cues):
             raise ValueError(f"ASS event verification failed: expected {len(cues)}, wrote {event_count}")
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(output_text, encoding=args.encoding)
+        written_event_count = write_ass_file(args.output, output_text)
+        if written_event_count != len(cues):
+            raise ValueError(
+                f"ASS file verification failed: expected {len(cues)} dialogues, wrote {written_event_count}"
+            )
     except (OSError, ValueError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2

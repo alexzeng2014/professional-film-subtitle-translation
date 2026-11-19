@@ -32,6 +32,7 @@ JAPANESE_KANA = re.compile(r"[\u3040-\u30ff]")
 KOREAN_HANGUL = re.compile(r"[\uac00-\ud7af]")
 LATIN_WORD = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
 NUMBER = re.compile(r"\d+(?:[.,]\d+)?")
+UTF8_BOM = b"\xef\xbb\xbf"
 SIMPLIFIED_MARKERS = set("们这国说话电影汉语后来发现时间没关于现里边对话")
 TRADITIONAL_MARKERS = set("們這國說話電影漢語後來發現時間沒關於現裡邊對話")
 
@@ -565,6 +566,7 @@ def audit_file(
     max_duration: float,
     min_gap_ms: int,
 ) -> Audit:
+    raw = path.read_bytes()
     text, encoding = read_text_with_fallback(path)
     format_name = detect_subtitle_format(path, text)
     if format_name == "SRT":
@@ -588,6 +590,14 @@ def audit_file(
     )
     if not cues:
         add_issue(issues, "EMPTY_SUBTITLE", "P0", "Subtitle file contains no parseable cues.")
+    if format_name == "ASS" and raw.startswith(UTF8_BOM):
+        add_issue(
+            issues,
+            "UTF8_BOM",
+            "P1",
+            "ASS file starts with a UTF-8 BOM; strict Kodi/libass paths may recognize the track but render zero events.",
+            value="EF BB BF",
+        )
     score = calculate_technical_score(issues, len(cues))
     severities = {issue.severity for issue in issues}
     status = "FAIL" if severities & {"P0", "P1"} else "WARN" if issues else "PASS"

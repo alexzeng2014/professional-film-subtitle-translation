@@ -39,6 +39,7 @@ professional-film-subtitle-translation/
     |-- srt_to_ass.py
     `-- align_subtitle_versions.py
 `-- tests/
+    |-- test_srt_to_ass.py
     `-- test_subtitle_qa.py
 ```
 
@@ -114,7 +115,9 @@ python scripts/srt_to_ass.py input.srt output.ass `
   --font "SimSun" --font-size 56
 ```
 
-默认样式为 1920×1080、宋体、白色文字、黑色描边、底部居中，可调整字体、字号、边距、分辨率和颜色。
+默认样式为 1920×1080、宋体、白色文字、黑色描边、底部居中，可调整字体、字号、边距、分辨率和颜色。输出固定为 UTF-8 无 BOM、CRLF 换行，并自动校验文件必须以 `[Script Info]` 开头。
+
+ASS/SSA 不应写入 UTF-8 BOM。带 BOM 的文件可能被 Kodi 识别为可选字幕轨，却渲染出零条事件；`subtitle_qa.py` 会把这种文件判为 P1 故障。
 
 ## 质量原则
 
@@ -133,6 +136,7 @@ python scripts/srt_to_ass.py input.srt output.ass `
 - CPS、行宽、重叠、负时长和引号错误检测。
 - 两份包含 1903/1916 条字幕的不同分段版本自动对齐。
 - SRT 到 ASS 转换及 FFprobe 字幕流解析。
+- ASS 无 BOM、CRLF 和输出文件头回归验证。
 - 简繁混用、中文句末句号与自动语言档案检测。
 - Skill 结构校验和 Python 语法编译。
 
